@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>测试页</title>
+	<link rel="stylesheet" type="text/css" href="test.css">
+	<script type="text/javascript" src="./Public/pintuer/jquery.js"></script>
+	<script language="javascript">
+		<!--
+		$(function(){
+			//请求数据
+			$("#jie").click(function() {
+				var num = new Array();
+				$("input[name='num[]']:checked").each(function(key) {
+					num[key] = $(this).val();
+				});
+				//console.log(num);
+				//return false;
+				$.post("http://192.168.2.143/Index/batch.html",{"flag":"jie","num":num},function(data){
+					console.log(data["info"]);
+				});
+			});
+		});
+		-->
+	</script>
+</head>
+<body>
+	<table>
+		<tr>
+			<th class="center">选择</th>
+			<th>姓名</th>
+			<th>邮箱</th>
+			<th>操作</th>
+		</tr>
+		<tr>
+			<td class="center"><input type="checkbox" checked="checked" name="num[]" value="1"></td>
+			<td>李四</td>
+			<td>lisi@ltbl.cn</td>
+			<td><a class="button" href="">编辑</a> <a class="button" href="">删除</a></td>
+		</tr>
+		<tr>
+			<td class="center"><input type="checkbox" checked="checked" name="num[]" value="2"></td>
+			<td>张三</td>
+			<td>zhangsan@ltbl.cn</td>
+			<td><a class="button" href="">编辑</a> <a class="button" href="">删除</a></td>
+		</tr>
+		<tr>
+			<td class="center"><input type="checkbox" checked="checked" name="num[]" value="3"></td>
+			<td>王麻子</td>
+			<td>wangmazi@ltbl.cn</td>
+			<td><a class="button" href="">编辑</a> <a class="button" href="">删除</a></td>
+		</tr>
+		<tr>
+			<td colspan="4">
+				<input type="button" name="sunmit" id="jie" value="提交">
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<title>手机自助借还系统</title>
+	<meta name="keywords" content="手机" />
+	<meta name="description" content="手机自助借还系统" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+	<link type="image/x-icon" href="__APP__/favicon.ico" rel="shortcut icon" />
+	<link href="__APP__/favicon.ico" rel="bookmark icon" />
+	<link rel="stylesheet" href="__PUBLIC__/pintuer/pintuer.css">
+	<link rel="stylesheet" href="__PUBLIC__/Css/style.css">
+	<style type="text/css">
+		<!--
+			.item img {
+				width:100%;
+				height:200px;
+			}
+			.button {
+				padding: 6px 6px;
+			}
+			.form-x .form-group .label {
+			  	float: left;
+			  	width: 13%;
+			  	text-align: left;
+			}
+			.form-x .form-group .field {
+				width: 87%;
+			  	padding: 7px 7px 7px 0;
+			}
+		-->
+	</style>
+	<script src="__PUBLIC__/pintuer/jquery.js"></script>
+	<script src="__PUBLIC__/pintuer/pintuer.js"></script>
+	<script src="__PUBLIC__/pintuer/respond.js"></script>
+	<script src="__PUBLIC__/pintuer/jquery.form.js"></script>
+	<script src="__PUBLIC__/layer/layer.js"></script>
+	<script language="JavaScript">
+	    <!--
+	    $(function(){
+	    	//用户角色标识（0、游客;1、普通用户;2、管理员）
+	    	var auth_role = "{$Think.session.auth.role}";
+	        //借
+	        $("#jie").click(function(){
+	        	if (auth_role > 0) {
+	        		//普通用户以上权限
+		        	if ($("input[name='num[]']:checked").length >= 1){
+		        		if($("input[name='user']").val() == '') {
+		        			layer.msg('请输入借用者！',{icon:2});
+		        			$("input[name='user']").focus();
+		        			return false;
+		        		}
+		        		$("input[name='type']").attr({value:2});//借用标识
+				    	$("#form").ajaxForm({
+				    		error: error,
+				    		success: success,
+				    		dataType: 'json',
+				    	});
+				    	function error() {
+				    		layer.msg('操作失败，请重试!',{icon:2,time:3000});
+				    	}
+				    	function success() {
+				    		layer.msg('操作成功!',{icon:1,time:1000});
+				    		setTimeout(function() {
+				    			//延时跳闸
+				    			location.href = "{:U('Index/history')}";
+			    			},1000);
+				    	}
+				   	} else {
+				   		layer.msg('你什么也没有选中，至少选择一个！',{icon:2});
+		                return false;
+				   	}
+		   		}else {
+		   			//还未登录（游客）
+		   			layer.msg("还不知道你是谁呢，先<a href='{:U('Public/login')}'>登录</a>吧。",{icon:5},{time:5000});
+		   		}
+	        });
+	        //还
+	        $("#huan").click(function(){
+	        	if (auth_role > 0) {
+	        		//普通用户以上权限
+		        	if ($("input[name='num[]']:checked").length >= 1){
+		        		$("input[name='type']").attr({value:3});//归还标识
+				    	$("#form").ajaxForm({
+				    		error: error,
+				    		success: success,
+				    		dataType: 'json',
+				    	});
+				    	function error() {
+				    		layer.msg('操作失败，请重试!',{icon:2,time:3000});
+				    	}
+				    	function success() {
+				    		layer.msg('操作成功!',{icon:1,time:1000});
+				    		setTimeout(function() {
+				    			//延时跳闸
+				    			location.href = "{:U('Index/history')}";
+			    			},1000);
+				    	}
+				   	} else {
+				   		layer.msg('你什么也没有选中，至少选择一个！',{icon:2});
+		                return false;
+				   	}
+		   		}else {
+		   			//还未登录（游客）
+		   			layer.msg("还不知道你是谁呢，先<a href='{:U('Public/login')}'>登录</a>吧。",{icon:5},{time:5000});
+		   		}
+	        });
+
+	    });
+	    -->
+	</script>
+</head>
+<body>
+<div class="container">
+	<!-- 包含公共头部 -->
+	<include file="Common/header" />
+	<!-- 面包屑开始 -->
+	<ul class="bread bg-gray bg-inverse radius-none hidden-l hidden-s hidden-m">
+		<li><span class="icon-home"></span> <a href="#"> 首页</a></li>
+		<li>手机列表</li>
+	</ul>
+	<!-- 面包屑结束 -->
+	<!-- 主体开始 -->
+	<div class="margin-top margin-bottom">
+		<div class="panel">
+			<div class="panel-head"><h2><span class="icon-mobile text-large"></span> 手机列表{$order}</h2></div>
+			<div class="panel-body">
+				<form name="form" class="form-auto" id="form" method="post" action="{:U('Index/rent')}">
+					<div class="table-responsive">
+						<table class="table table-bordered table-striped table-hover">
+							<tr>
+								<th>手机编号</th>
+								<th>手机品牌</th>
+								<th>手机型号</th>
+								<th>RAM</th>
+								<th>ROM</th>
+								<th>系统版本</th>
+								<th>颜色</th>
+								<th>屏幕</th>
+								<th>手机位置</th>
+								<th>备注说明</th>
+								<th align="center">操作</th>
+							</tr>
+							<volist name="list" id="vo">
+							<tr>
+								<td align="center"  title="IMEI:{$vo.imei|default='未登记'}">{$vo.num}</td>
+								<td align="center"><a href="{:U('Index/search',array('flag'=>'pinpai','pinpai'=>$vo['pinpai']))}">{$vo.pinpai}</a></td>
+								<td>{$vo.model}</td>
+								<td align="center">{$vo.ram|default='待采集'}</td>
+								<td align="center">{$vo.rom|default='待采集'}</td>
+								<td align="center">{$vo.system|default='待采集'}</td>
+								<td align="center">{$vo.color|default='待采集'}</td>
+								<td align="center">{$vo.screen|default='待采集'}</td>
+								<if condition="$vo.user eq 仓库">
+								<td align="center"><a href="{:U('Index/search',array('flag'=>'user','username'=>$vo['user']))}" title="查看在仓库的所有手机">{$vo.user}</a></td>
+								<else/>
+								<td align="center"><a href="{:U('Index/search',array('flag'=>'user','username'=>$vo['user']))}" title="查看{$vo.user}借用的所有手机">{$vo.user}</a></td>
+								</if>
+								<td>{$vo.remark}</td>
+								<td align="center">
+									<div class="button-group">
+									<switch name="Think.session.auth.role">
+										<case value="1">
+										<a href="{:U('Index/rent',array('num'=>$vo['num'],'type'=>2))}" class="button-small radius bg-main" title="申请借用">借用</a>
+										<if condition="vo.username eq session.auth.username">
+											<a href="{:U('Index/rent',array('num'=>$vo['num'],'type'=>3))}" class="button-small radius bg-sub" title="归还到仓库">归还</a>
+										</if>
+										</case>
+										<case value="2">
+										<a href="{:U('Index/editMobile',array('num'=>$vo['num']))}" class="button-small radius bg-sub" title="修改数据">编辑</a>
+										</case>
+										</switch>
+									<a href="{:U('Index/history',array('num'=>$vo['num']))}" class="button-small radius bg-green" title="历史记录">明细</a>
+									</div>
+								</td>
+							</tr>
+							</volist>
+							<tr>
+								<th>手机编号</th>
+								<th>手机品牌</th>
+								<th>手机型号</th>
+								<th>RAM</th>
+								<th>ROM</th>
+								<th>颜色</th>
+								<th>屏幕</th>
+								<th>附属配件</th>
+								<th>手机位置</th>
+								<th>备注说明</th>
+								<th align="center">操作</th>
+							</tr>
+						</table>
+					</div>
+				</form>
+				<!-- 分页导航条开始 -->
+				<div class="text-center">
+					<ul class="margin pagination pagination-group border-sub">
+						{$page}
+					</ul>
+				</div>
+				<!-- 分页导航条结束 -->
+			</div>
+		</div>
+	</div>
+	<!-- 主体结束 -->
+	<!-- 包含公共页脚 -->
+	<include file="Common/footer" />
+</div>
+</body>
+</html>

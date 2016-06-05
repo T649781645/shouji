@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<title>历史记录-手机自助借还系统</title>
+	<meta name="keywords" content="手机" />
+	<meta name="description" content="手机自助借还系统" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+	<link type="image/x-icon" href="__APP__/favicon.ico" rel="shortcut icon" />
+	<link href="__APP__/favicon.ico" rel="bookmark icon" />
+	<link rel="stylesheet" href="__PUBLIC__/pintuer/pintuer.css">
+	<link rel="stylesheet" href="__PUBLIC__/Css/style.css">
+	<style type="text/css">
+		<!--
+			.item img {
+				width:100%;
+				height:200px;
+			}
+			.button {
+				padding: 6px 6px;
+			}
+			.text-red a {color: #e33;}
+			.text-blue a {color: #0ae;}
+		-->
+	</style>
+	<script src="__PUBLIC__/pintuer/jquery.js"></script>
+	<script src="__PUBLIC__/pintuer/pintuer.js"></script>
+	<script src="__PUBLIC__/pintuer/respond.js"></script>
+	<script src="__PUBLIC__/pintuer/jquery.form.js"></script>
+	<script src="__PUBLIC__/layer/layer.js"></script>
+</head>
+<body>
+<div class="container">
+	<!-- 包含公共头部 -->
+	<include file="Common/header" />
+	<!-- 面包屑开始 -->
+	<ul class="bread bg-gray bg-inverse radius-none print-hidden hidden-l hidden-s">
+		<li><span class="icon-home"></span> <a href="#"> 首页</a></li>
+		<li>历史记录</li>
+	</ul>
+	<!-- 面包屑结束 -->
+	<!-- 主体开始 -->
+	<div class="margin-top margin-bottom">
+		<!-- panel面板开始 -->
+		<div class="panel">
+			<div class="panel-head">
+				<h2><span class="icon-list"></span> 历史记录
+					<p class="float-right print-hidden">
+						<button class="button button-little icon-reply" onclick="javascript:history.go(-1)"> 返回</button>
+						<button class="button button-little win-refresh icon-refresh"> 刷新</button>
+						<button class="button button-little win-print icon-print"> 打印</button>
+					</p>
+				</h2>
+			</div>
+			<div class="panel-body">
+				<notempty name="list">
+				<div class="table-responsive">
+					<table class="table table-bordered table-striped table-hover">
+						<tr>
+							<th>编号</th>
+							<th>品牌</th>
+							<th>型号</th>
+							<th>操作者</th>
+							<th>交易类型</th>
+							<th>操作时间</th>
+							<th>备注说明</th>
+						</tr>
+						<form name="form" id="form" method="post" action="{:U('Index/rent')}">
+							<volist name="list" id="vo">
+							<tr <switch name="vo.type"><case value="2|4">class="text-blue"</case><case value="3|5">class="text-red"</case></switch>>
+								<td align="center"><a href="{:U('Index/history',array('num'=>$vo['num']))}" title="查看{$vo.num}号手机记录">{$vo.num}</a></td>
+								<td align="center">{$vo.pinpai}</td>
+								<td>{$vo.model}</td>
+								<td align="center"><a href="{:U('Index/search',array('flag'=>'user','username'=>$vo['user']))}" title="查看{$vo.user}借用的所有手机">{$vo.user}</a></td>
+								<td align="center">{$vo.type|rent}</td>
+								<td align="center"><a href="{:U('Index/history',array('date'=>$vo['time']))}" title="查看{$vo.time|date="Y-m-d",###}的记录">{$vo.time|date="Y-m-d H:i:s",###}</a></td>
+								<td align="center">{$vo.remark}</td>
+							</tr>
+							</volist>
+						</form>
+						<tr>
+							<th>编号</th>
+							<th>品牌</th>
+							<th>型号</th>
+							<th>操作者</th>
+							<th>交易类型</th>
+							<th>操作时间</th>
+							<th>备注说明</th>
+						</tr>
+					</table>
+				</div>
+				<!-- 分页导航条开始 -->
+				<div class="text-center print-hidden">
+					<ul class="margin pagination pagination-group border-sub">
+						{$page}
+					</ul>
+				</div>
+				<!-- 分页导航条结束 -->
+				<else />
+				<p>当前没有历史记录</p>
+				</notempty>
+			</div>
+		</div>
+		<!-- panel面板结束 -->
+	</div>
+	<!-- 主体结束 -->
+	<!-- 包含公共页脚 -->
+	<include file="Common/footer" />
+</div>
+</body>
+</html>

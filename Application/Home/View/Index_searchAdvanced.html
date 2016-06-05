@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<title>手机自助借还系统</title>
+	<meta name="keywords" content="手机" />
+	<meta name="description" content="手机自助借还系统" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+	<link type="image/x-icon" href="__APP__/favicon.ico" rel="shortcut icon" />
+	<link href="__APP__/favicon.ico" rel="bookmark icon" />
+	<link rel="stylesheet" href="__PUBLIC__/pintuer/pintuer.css">
+	<link rel="stylesheet" href="__PUBLIC__/Css/style.css">
+	<style type="text/css">
+		<!--
+			.item img {
+				width:100%;
+				height:200px;
+			}
+			.button {
+				padding: 6px 6px;
+			}
+			.help {
+				height: 200px;
+				line-height: 200px;
+			  	color: #daa;
+			  	font-size: 3em;
+			  	text-align: center;
+			  	border:1px dashed #99CC99;
+			}
+		-->
+	</style>
+	<script src="__PUBLIC__/pintuer/jquery.js"></script>
+	<script src="__PUBLIC__/pintuer/pintuer.js"></script>
+	<script src="__PUBLIC__/pintuer/respond.js"></script>
+	<script src="__PUBLIC__/pintuer/jquery.form.js"></script>
+	<script src="__PUBLIC__/layer/layer.js"></script>
+	<script type="text/javascript">
+		<!--
+		$(function(){
+			// 根据输入前缀请求姓名
+			var user = $("input[name='user']");
+			var autoList_user = $("#autoList_user");
+			user.keyup(function(){
+	    		if($(this).val() !== ''){
+		        setTimeout(function() {
+	            $.post("{:U('Public/request_user')}",{'username':''+user.val()+''},function(data) {
+	            	var data = data['info'];
+	            	autoList_user.html('');//先清空，防止多次请求后重复
+		            if(data.length >0) {
+		            	for(var i in data){
+		            		autoList_user.append("<option value="+data[i]+">");
+		            	}
+		            }
+	            })
+		        },500);
+	    		}
+   		 	});
+   		 	// Ajax提交表单
+			$("#advanced").ajaxForm({
+				success:success,
+				dataType:'json'
+			});
+			function success(data) {
+				//console.log(data);
+				switch (data['status']) {
+					case 1:
+						var str = '';
+          	$("#help").addClass("hidden");
+          	$("#table-responsive").removeClass('hidden');
+          	$("#table-responsive").addClass('show');
+          	$(".result_tr").remove();//清除上次请求的数据
+          	$.each(data.info,function(i,item){
+        			//拼凑字符串
+          		str = str + "<tr class='result_tr'><td class='text-center'><a href='http://10.0.1.21/Index/editMobile/num/"+item['num']+".html' title='编辑手机信息'>"+item['num']+"</a></td><td class='text-center'>"+item['pinpai']+"</td><td>"+item['model']+"</td><td class='text-center'>"+item['ram']+"</td><td class='text-center'>"+item['rom']+"</td><td class='text-center'>"+item['lte']+"</td><td class='text-center'>"+item['system']+"</td><td class='text-center'>"+item['screen']+"</td><td class='text-center'>"+item['color']+"</td><td class='text-center'>"+item['peijian']+"</td><td class='text-center'>"+item['user']+"</td><td class='text-center'><a href='http://10.0.1.21/Index/history/num/"+item['num']+".html' target='_blank'>明细</a></td></tr>";
+          	})
+          	$("tr:first").after(str);
+        	break;
+        	case 0:
+        		$("#table-responsive").addClass('hidden');
+        		$("#help").removeClass("hidden");
+        		$("#help").addClass("show");
+        		$('#help').html('噢，什么也没有找到!');
+      		break;
+      	}
+				layer.msg('查询完毕！',{icon:1,time:1000});
+			}
+		})
+		-->
+	</script>
+</head>
+<body>
+<div class="container">
+	<!-- 包含公共头部 -->
+	<include file="Common/header" />
+	<!-- 面包屑开始 -->
+	<ul class="bread bg-gray bg-inverse radius-none">
+		<li><span class="icon-home"></span> <a href="#"> 首页</a></li>
+		<li>高级搜索</li>
+	</ul>
+	<!-- 面包屑结束 -->
+	<!-- 主体开始 -->
+	<div class="margin-top margin-bottom">
+		<div class="panel">
+			<div class="panel-head"><h2><span class="icon-search"></span> 高级搜索</h2></div>
+			<div class="panel-body">
+				<form method="post" name="advanced" id="advanced" class="form-auto form-inline" action="{:U('Index/search',array('flag'=>'advanced'))}">
+					<div class="form-group">
+						<div class="label">
+							<label for="pinpai">品牌</label>
+						</div>
+						<div class="field">
+							<input type="text" class="input text-center" name="pinpai" list="autoList_pinpai" size="6" placeholder="品牌" />
+							<datalist id="autoList_pinpai">
+								<option value="酷派"></option>
+								<option value="小米"></option>
+							</datalist>
+						</div>
+						<div class="label margin-small-left">
+							<label for="model">型号</label>
+						</div>
+						<div class="field">
+							<input type="text" class="input" name="model" size="6" placeholder="工厂型号" />
+						</div>
+						<div class="label margin-small-left">
+							<label>RAM</label>
+						</div>
+						<div class="field">
+							<input type="text" class="input" name="ram" size="6" placeholder="运行内存">
+						</div>
+						<div class="label margin-small-left">
+							<label>ROM</label>
+						</div>
+						<div class="field">
+							<input type="text" class="input" name="rom" size="6" placeholder="机身存储">
+						</div>
+						<div class="label margin-small-left">
+							<label>屏幕</label>
+						</div>
+						<div class="field">
+							<input type="text" class="input" name="screen" size="6" placeholder="屏幕尺寸">
+						</div>
+						<div class="label margin-small-left">
+							<label>系统</label>
+						</div>
+						<div class="field">
+							<input type="text" class="input" name="system" size="6" placeholder="系统版本">
+						</div>
+						<div class="label margin-small-left">
+							<label>制式</label>
+						</div>
+						<div class="field">
+							<input type="text" class="input" name="lte" size="6" placeholder="网络制式">
+						</div>
+						<div class="label margin-small-left">
+							<label for="status">状态</label>
+						</div>
+						<div class="field">
+							<div class="button-group checkbox border-sub">
+								<label class="button"><input name="status[]" value="1" type="checkbox">正常</label>
+								<label class="button"><input name="status[]" value="2" type="checkbox">返修</label>
+								<label class="button"><input name="status[]" value="3" type="checkbox">退货</label>
+								<label class="button"><input name="status[]" value="4" type="checkbox">报废</label>
+							</div>
+						</div>
+						<div class="label margin-small-left">
+							<label for="user">借用人</label>
+						</div>
+						<div class="field">
+							<input type="text" class="input text-center" name="user" list="autoList_user" size="7" placeholder="借用人" />
+							<datalist id="autoList_user"></datalist>
+						</div>
+						<div class="field margin-small-left">
+							<button class="button bg-sub" id="submit" type="submit">高级搜索</button>
+							<input type="hidden" name="flag" value="advanced" />
+						</div>
+					</div>
+				</form>
+				<h1 class="margin-top help" id="help">搜索一下你就知道</h1>
+				<!-- 搜索结果 -->
+				<div class="table-responsive margin-top hidden" id="table-responsive">
+					<table class="table table-bordered table-striped table-hover">
+						<tr>
+							<th>手机编号</th>
+							<th>手机品牌</th>
+							<th>手机型号</th>
+							<th>RAM</th>
+							<th>ROM</th>
+							<th>制式</th>
+							<th>系统版本</th>
+							<th>屏幕</th>
+							<th>颜色</th>
+							<th>附属配件</th>
+							<th>手机位置</th>
+							<th>操作</th>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 主体结束 -->
+	<!-- 包含公共页脚 -->
+	<include file="Common/footer" />
+</div>
+</body>
+</html>

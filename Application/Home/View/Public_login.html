@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<title>手机自助借还系统</title>
+	<meta name="keywords" content="手机" />
+	<meta name="description" content="手机自助借还系统" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+	<link type="image/x-icon" href="__APP__/favicon.ico" rel="shortcut icon" />
+	<link href="__APP__/favicon.ico" rel="bookmark icon" />
+	<link rel="stylesheet" href="__PUBLIC__/pintuer/pintuer.css">
+	<link rel="stylesheet" href="__PUBLIC__/Css/style.css">
+	<style type="text/css">
+		<!--
+		/*用户CSS样式*/
+		.login {
+			margin-top: 200px;
+		}
+		/*.form-group input,.form-group span {
+			margin:0px 0px;
+		}*/
+		.form-group img {
+			margin: 5px 0px;
+		}
+		-->
+	</style>
+	<script src="__PUBLIC__/pintuer/jquery.js"></script>
+	<script src="__PUBLIC__/pintuer/pintuer.js"></script>
+	<script src="__PUBLIC__/pintuer/respond.js"></script>
+	<script src="__PUBLIC__/layer/layer.js"></script>
+	<script src="__PUBLIC__/pintuer/jquery.form.js"></script>
+	<script language="JavaScript">
+	    <!--
+		$(function() {
+			/*var session = "{$session}";
+			if(!session) {
+				layer.msg('未登录或登录超时!',{icon:2,time:1500});
+			}*/
+			$("#submit").click(function() {
+		   		//ajax提交
+		   		$('#form').ajaxForm({
+   		            beforeSubmit:checkForm,
+   		            success:success,
+   		            //error:error,
+   		            dataType:'json'
+   		        });
+		   		//检查合法性
+		   		function checkForm() {
+		   			$("#submit").attr({disabled:"disabled"});
+		   			if($("input[name='email']").val() == '') {
+	    				layer.msg('必须输入帐号！',{icon:2});
+	    				return false;
+	    			}
+	    			if($("input[name='password']").val() == '') {
+	    				layer.msg('你还没有输入密码！',{icon:2});
+	    				return false;
+	    			}
+	    			/*if(verify) {
+	    				if($("input[name='code']") == '') {
+	    					layer.msg('必须输入验证码!',{icon:2});
+	    					return false;
+	    				}
+	    			}*/
+		   		}
+		   		//处理完成
+		   		function success(data) {
+		   			if(data['info'] == '登录成功!') {
+		            	layer.msg(data['info'],{icon:1});
+						setTimeout(function() {
+							//延时跳转
+		        			location.href = "{:U('Index/index')}";
+		    			},1000);
+	    			}else {
+	    				layer.msg(data['info'],{icon:2,time:1000});
+	    				setTimeout(function(){$("#submit").removeAttr("disabled")},1500);
+	    			}
+        		}
+        		//请求失败（可能为网络问题无法连接服务器等）
+        		function error() {
+        			layer.msg('请求失败,请重试!',{icon:2,time:1000});
+        			setTimeout(function(){$("#submit").removeAttr("disabled")},1500);
+        		}
+	   		});
+        });
+	    -->
+	</script>
+</head>
+<body>
+<div class="container">
+	<div class="line-middle login">
+		<div class="xs4 xs4-move">
+			<h1 class="text-center margin-bottom">登 录 系 统</h1>
+			<!-- 登录表单开始 -->
+			<form name="form" id="form" method="post" class="form-auto" action="{:U('Public/login')}">
+				<div class="form-group">
+					<div class="field field-icon">
+						<input type="text" class="input" name="email" size="50" placeholder="输入账号" />
+					  	<span class="icon icon-user"></span>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="field field-icon">
+						<input type="password" class="input" name="password" size="50" placeholder="输入密码" />
+						<span class="icon icon-unlock-alt"></span>
+					</div>
+				</div>
+
+				<if condition="$Think.config.verify_code eq true">
+				<div class="form-group">
+					<div class="field field-icon">
+						<input type="password" class="input" name="code" size="50" placeholder="输入验证码" />
+						<span class="icon icon-key"></span>
+						<img src="{:U('Public/verify')}" />
+					</div>
+				</div>
+				</if>
+
+				<div class="form-group">
+					<div class="field field-icon">
+						<button class="button button-block bg-sub" name="submit" id="submit">登 录</button>
+					</div>
+				</div>
+			</form>
+			<!-- 登录表单结束 -->
+			<if condition="$Think.config.auth_guest eq true">
+			<p class="text-center margin-small-top"><a href="{:U('Public/login',array('user'=>'guest'))}" title="游客只能查询不能借还">以游客身份登录</a></p>
+			</if>
+		</div>
+	</div>
+	<!-- 包含公共页脚 -->
+	<include file="Common/footer" />
+</div>
+</body>
+</html>

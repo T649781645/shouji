@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<title>手机自助借还系统</title>
+	<meta name="keywords" content="手机" />
+	<meta name="description" content="手机自助借还系统" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+	<link type="image/x-icon" href="__APP__/favicon.ico" rel="shortcut icon" />
+	<link href="__APP__/favicon.ico" rel="bookmark icon" />
+	<link rel="stylesheet" href="__PUBLIC__/pintuer/pintuer.css">
+	<link rel="stylesheet" href="__PUBLIC__/Css/style.css">
+	<style type="text/css">
+		<!--
+			.item img {
+				width:100%;
+				height:200px;
+			}
+			.button {
+				padding: 6px 6px;
+			}
+		-->
+	</style>
+	<script src="__PUBLIC__/pintuer/jquery.js"></script>
+	<script src="__PUBLIC__/pintuer/pintuer.js"></script>
+	<script src="__PUBLIC__/pintuer/respond.js"></script>
+	<script src="__PUBLIC__/pintuer/jquery.form.js"></script>
+	<script src="__PUBLIC__/layer/layer.js"></script>
+	<script language="JavaScript">
+		<!--
+	    $(function() {
+	    	var str = "<div class='button-group' id='buy_address'><span class='icon icon-shopping-cart'></span><input type='text' class='input input-auto' name='buy_address' size='30' placeholder='非必填' /><span class='text-gray icon-question-circle  margin-left'> 用于区别是否华强北供货</span></div>"
+	    	$("#buy_other").click(function() {
+	    		if ($("#buy_address").length <= 0) {
+	    			$("#buy_group").append(str);
+	    		}
+	    		$("input[name='buy_address']").focus();
+	    	});
+	    	$("#buy_hua").click(function() {
+	    		$("#buy_address").remove();
+	    	});
+				$("#submit").click(function() {
+					$("#submit").addClass('disable');
+		   		//ajax提交
+		   		$('#form').ajaxForm({
+   		            beforeSubmit:  checkForm, //发送请求之前调用
+   		            success:       success,  //请求成功后调用
+   		            error : error,//请求失败调用
+   		            dataType: 'json' //数据处理方式
+   		        });
+		   		//检查合法性
+		   		function checkForm() {
+		   			if ($("input[name='pinpai']:checked").length < 1) {
+		        		layer.msg('请选择选择品牌!',{icon:2});
+				   		return false;
+			   		}
+			   		if ($("input[name='model']").val() == '') {
+				   		layer.msg('型号不能为空，请输入型号!',{icon:2});
+				   		return false;
+			   		}
+			   		if ($("input[name='imei']").val() == '') {
+				   		layer.msg('串号不能为空!',{icon:2});
+				   		return false;
+			   		}
+			   		if ($("input[name='buy']:checked").length < 1) {
+		        		layer.msg('请选择购买渠道!',{icon:2});
+				   		return false;
+			   		}
+		   		}
+		   		//处理完成
+		   		function success(data) {
+          	layer.msg(data['info'],{icon:1});
+						setTimeout(function() {
+							//延时跳转
+        			location.href = "{:U('Index/index')}";
+	    			},1000);
+      		}
+        		//请求失败（可能为网络问题无法连接服务器等）
+        		function error() {
+        			layer.msg('请求失败,请重试!',{icon:2});
+        		}
+	   		});
+				$(".system_android").click(function() {
+					$("input[name='system']").val("Android ");
+					$("input[name='system']").focus();
+				});
+				$(".system_apple").click(function() {
+					$("input[name='system']").val("IOS ");
+					$("input[name='system']").focus();
+				});
+				$(".pixel").click(function() {
+					$("input[name='pixel']").val("1920px*1080px");
+					$("input[name='pixel']").focus();
+				});
+      });
+        -->
+	</script>
+</head>
+<body>
+<div class="container">
+	<!-- 包含公共头部 -->
+	<include file="Common/header" />
+	<!-- 面包屑开始 -->
+	<ul class="bread bg-gray bg-inverse radius-none">
+		<li><span class="icon-home"></span> <a href="#">首页</a></li>
+		<li>新机登记</li>
+	</ul>
+	<!-- 面包屑结束 -->
+	<!-- 主体开始 -->
+	<div class="margin-top margin-bottom">
+		<div class="panel">
+			<div class="panel-head"><h2><span class="icon-plus-circle"></span> 新机登记</h2></div>
+			<div class="panel-body">
+				<!-- 添加新机表单开始 -->
+				<form name="form" id="form" method="post" class="form-x" action="{:U('Index/addnew')}">
+					<div class="tab">
+						<div class="tab-head">
+							<ul class="tab-nav">
+								<li class="active"><a href="#tab-start">基本信息</a> </li>
+								<li><a href="#tab-css">扩展信息</a> </li>
+							</ul>
+						</div>
+						<!-- Tab开始 -->
+						<div class="tab-body">
+							<!-- 基本信息开始 -->
+							<div class="tab-panel active" id="tab-start">
+								<div class="form-group">
+									<div class="label">
+										<label for="pinpai">手机品牌</label>
+									</div>
+									<div class="field">
+										<div class="button-group radio border-blue">
+											<foreach name="pinpai" item="vo">
+												<label class="button"><input name="pinpai" value="{$vo}" type="radio">{$vo}</label>
+											</foreach>
+										</div>
+									</div>
+								</div>
+						  	<div class="form-group">
+							    <div class="label">
+						      	<label for="model">手机型号</label>
+							    </div>
+							    <div class="field field-icon">
+						      	<span class="icon icon-mobile"></span>
+						      	<input type="text" class="input input-auto" name="model" size="30" placeholder="请输入型号" />
+							    </div>
+						  	</div>
+						  	<div class="form-group">
+							    <div class="label">
+						      	<label for="imei">手机串号</label>
+							    </div>
+							    <div class="field field-icon">
+						      	<span class="icon icon-barcode"></span>
+						      	<input type="text" class="input input-auto" name="imei" size="50" placeholder="IMEI或IMED" />
+							    </div>
+						  	</div>
+								<div class="form-group">
+									<div class="label">
+										<label for="peijian[]">附属配件</label>
+									</div>
+									<div class="field">
+										<div class="button-group checkbox border-sub">
+											<label class="button"><input name="peijian[]" value="盒子" type="checkbox"><span class="icon-inbox"></span> 盒 子</label>
+											<label class="button"><input name="peijian[]" value="数据线" type="checkbox"><span class="icon-android"></span> 数据线</label>
+											<label class="button"><input name="peijian[]" value="充电器" type="checkbox"><span class="icon-bolt"></span> 充电器</label>
+											<label class="button"><input name="peijian[]" value="耳机" type="checkbox"><span class="icon-headphones"></span> 耳 机</label>
+										</div>
+										<span class="text-gray icon-question-circle margin-left"> 有则选择</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="label">
+										<label for="color">手机颜色</label>
+									</div>
+									<div class="field">
+										<div class="button-group radio border-sub">
+											<foreach name="color" item="vo">
+												<label class="button"><input name="color" value="{$vo}" type="radio">{$vo}</label>
+											</foreach>
+										</div>
+										<span class="text-gray icon-question-circle margin-left"> 设备主体颜色</span>
+									</div>
+								</div>
+						  	<div class="form-group">
+							    <div class="label">
+							      	<label for="buy">供应渠道</label>
+							    </div>
+							    <div class="field field-icon" id="buy_group">
+							    	<div class="button-group radio border-sub">
+											<label class="button"><input name="buy" value="华强北" type="radio" id="buy_hua">华强北</label>
+			              	<label class="button"><input name="buy" value="其他" type="radio" id="buy_other">其他渠道</label>
+			              </div>
+							    </div>
+						  	</div>
+						  	<div class="form-group">
+							    <div class="label">
+						      	<label for="remark">备注说明</label>
+							    </div>
+							    <div class="field">
+						      	<textarea name="remark" class="input input-auto" rows="5" cols="80" placeholder="对这个手机的说明"></textarea>
+							    </div>
+						  	</div>
+
+							</div>
+							<!-- 基本信息结束 -->
+							<!-- 扩展信息开始 -->
+							<div class="tab-panel" id="tab-css">
+								<div class="form-group">
+									<div class="label">
+										<label for="system">系统版本</label>
+									</div>
+									<div class="field field-icon">
+						      	<span class="icon icon-cogs"></span>
+										<input type="text" class="input input-auto" name="system" size="40" placeholder="系统详细版本" />
+										<a href="#" class="system_android"><span class="text-gray icon-android margin-left"> 安卓&nbsp;&nbsp;/</span></a>
+										<a href="#" class="system_apple"><span class="text-gray icon-apple margin-left"> 苹果</span></a>
+									</div>
+								</div>
+								<div class="form-group">
+							    <div class="label">
+						      	<label for="ram">运行内存</label>
+							    </div>
+							    <div class="field">
+										<div class="button-group radio border-sub">
+											<foreach name="ram" item="vo">
+												<label class="button"><input name="ram" value="{$vo}" type="radio">{$vo}</label>
+											</foreach>
+										</div>
+										<span class="text-gray icon-tachometer margin-left"> RAM</span>
+									</div>
+						  	</div>
+						  	<div class="form-group">
+							    <div class="label">
+						      	<label for="rom">机身存储</label>
+							    </div>
+							    <div class="field">
+										<div class="button-group radio border-sub">
+											<foreach name="rom" item="vo">
+												<label class="button"><input name="rom" value="{$vo}" type="radio">{$vo}</label>
+											</foreach>
+										</div>
+										<span class="text-gray icon-database margin-left"> ROM</span>
+									</div>
+						  	</div>
+						  	<div class="form-group">
+							    <div class="label">
+						      	<label for="screen">屏幕尺寸</label>
+							    </div>
+							    <div class="field">
+										<div class="button-group radio border-sub">
+											<foreach name="screen" item="vo">
+												<label class="button"><input name="screen" value="{$vo}" type="radio">{$vo}</label>
+											</foreach>
+										</div>
+										<span class="text-gray icon-desktop margin-left"> 单位英寸</span>
+									</div>
+						  	</div>
+								<div class="form-group">
+									<div class="label">
+										<label for="pixel">分辨率</label>
+									</div>
+									<div class="field">
+										<div class="field field-icon">
+											<span class="icon icon-desktop"></span>
+											<input type="text" class="input input-auto" name="pixel" size="40" placeholder="屏幕分辨率" />
+											<a href="#" class="pixel"><span class="text-gray icon-question-circle margin-left"> 屏幕分辨率。例如：1920px*1080px</span></a>
+										</div>
+									</div>
+								</div>
+						  	<div class="form-group">
+							    <div class="label">
+						      	<label for="lte">网络制式</label>
+							    </div>
+							    <div class="field">
+										<div class="button-group radio border-sub">
+											<foreach name="lte" item="vo">
+												<label class="button"><input name="lte" value="{$vo}" type="radio">{$vo}</label>
+											</foreach>
+										</div>
+										<span class="text-gray icon-signal margin-left"> 支持网络版本</span>
+									</div>
+						  	</div>
+							</div>
+							<!-- 扩展信息结束 -->
+							<!-- 提交按钮开始 -->
+							<div class="form-button">
+					  		<button class="button bg-blue" name="submit" id="submit">提交登记</button>
+					  		<button class="button bg-yellow" type="reset" value="Reset">重置表单</button>
+					  		<input type="hidden" name="status" value="1"><!-- 手机状态 -->
+				  		</div>
+				  		<!-- 提交按钮结束 -->
+						</form>
+						<!-- 添加新机表单结束 -->
+					</div>
+					<!-- Tab Body 结束 -->
+				</div>
+				<!-- tab结束 -->
+
+			</div>
+		</div>
+	</div>
+	<!-- 主体结束 -->
+	<!-- 包含公共页脚 -->
+	<include file="Common/footer" />
+</div>
+</body>
+</html>

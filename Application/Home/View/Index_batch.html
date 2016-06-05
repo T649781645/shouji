@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<title>手机自助借还系统</title>
+	<meta name="keywords" content="手机" />
+	<meta name="description" content="手机自助借还系统" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+	<link type="image/x-icon" href="__APP__/favicon.ico" rel="shortcut icon" />
+	<link href="__APP__/favicon.ico" rel="bookmark icon" />
+	<link rel="stylesheet" href="__PUBLIC__/pintuer/pintuer.css">
+	<link rel="stylesheet" href="__PUBLIC__/Css/style.css">
+	<style type="text/css">
+		<!--
+			.item img {
+				width:100%;
+				height:200px;
+			}
+			.button {
+				padding: 6px 6px;
+			}
+			.help {
+				height: 200px;
+				line-height: 200px;
+			  	color: #daa;
+			  	font-size: 3em;
+			  	text-align: center;
+			  	border:1px dashed #99CC99;
+			}
+		-->
+	</style>
+	<script src="__PUBLIC__/pintuer/jquery.js"></script>
+	<script src="__PUBLIC__/pintuer/pintuer.js"></script>
+	<script src="__PUBLIC__/pintuer/respond.js"></script>
+	<script src="__PUBLIC__/pintuer/jquery.form.js"></script>
+	<script src="__PUBLIC__/layer/layer.js"></script>
+	<script language="JavaScript">
+	    <!--
+	    $(function(){
+	        //根据编号Ajax动态返回手机信息
+	        var num = $("input[name='ajax_name']");
+	        var table = $("#table");
+	        var url = "{:U('Index/batch')}";
+	        var j = 0;
+	        //添加设备（回车提交事件）
+         	$("body").keydown(function() {
+         		//keyCode=13是回车键
+					if (event.keyCode == "13") {
+						if(num.val() !== '') {
+			    		$.post(url,{'num':''+num.val()+'','flag':'ajax'},function(data) {
+			    			var data = data['info'];//返回值(未查到数据时返回false，查询到数据时返回数组)
+				            if(data == false) {
+				            	num.addClass('shake');
+				            	setTimeout(function() {
+			            			num.removeClass('shake');//延时移除shake样式以便下次可以生效
+			        			},500);
+			        			num.attr({"placeholder":"不存在,请重新输入!"});
+				            	layer.msg('没有找到'+num.val()+'号手机信息!',{icon:2});//失败提示
+				            	num.val('');
+				            	num.focus();
+				            }else {
+				            	var str = '';
+				            	$("#help").addClass("hidden");
+				            	$("#count").removeClass("hidden");
+				            	$("#table-responsive").removeClass('hidden');
+				            	$("#table-responsive").addClass('show');
+				            	$("#user").removeClass('hidden');
+				            	var count = $("#count>strong").html();//获取当前借物车中的个数
+				            	$("#count>strong").html(parseInt(count)+1);
+				            	num.val('');
+				            	num.focus();
+				            	if (j == 0) {
+				            		$("#table-responsive").addClass('show');
+				            		table.append("<tr><th>选择</th><th>编号</th><th>品牌</th><th>型号</th><th>当前位置</th><th>附属配件</th><th>操作</th></tr>");
+				            		j = j+1;
+				            	}
+				            	//拼凑字符串
+				            	str = "<tr id='t"+data['num']+"'><td align='center'><input type='checkbox' checked='checked' value="+data['num']+" name='num[]'></td><td class='text-center'>"+data['num']+"</td><td class='text-center'>"+data['pinpai']+"</td><td>"+data['model']+"</td><td class='text-center'>"+data['user']+"</td><td class='text-center'>"+data['peijian']+"</td><td class='text-center'><a href='http://10.0.1.21/Index/editMobile/num/"+data['num']+".html'>编辑</a> <a href='http://10.0.1.21/Index/history/num/"+data['num']+".html' target='_blank'>明细</a> <a href='javascript:void(0)' onclick='removes("+data['num']+")'>移除</a></td></tr>";
+				            	$("tr:first").after(str);//把字符串追加到table中第一行的后面（倒序方便查看）
+				            	num.attr({"placeholder":"输入手机编号回车"});
+				            	layer.msg('添加成功！',{icon:1,time:1000});//成功提示弹层
+				            }
+			    		});
+		    		}else {
+		    			layer.msg('请输入编号!',{icon:2});//编号为空
+		    			num.focus();
+		    		}
+					}
+     		});
+			//添加设备结束
+			//借、还提交开始
+			var jiehuan = $(".submit");
+			var url = "{:U('Index/batch')}";
+			jiehuan.click(function() {
+				if ($("input[name='user']").val() != '') {
+					switch ($(this).html()) {
+						case '借用':
+							var type = 'jie';
+						break;
+						case '归还':
+							var type = 'huan';
+						break;
+						case '返修':
+							var type = 'xiu';
+						break;
+						case '退货':
+							var type = 'tui';
+						break;
+						case '处理':
+							var type = 'chuli';
+						break;
+						default:
+							layer.msg('未知操作!',{icon:1,time:5000});
+							return false;
+					}
+					var num = new Array();
+					$("input[name='num[]']:checked").each(function(key) {
+						num[key] = $(this).val();
+					});
+					$.post(url,{'num':num,'flag':'rent','type':type,'username':$("input[name='user']").val(),'remark':$("input[name='remark']").val()},function(data) {
+						var data = data['info'];
+						if (data == '操作成功!') {
+							layer.msg(data,{icon:1,time:500});
+						} else {
+							layer.msg(data,{icon:2,time:500});
+						}
+						setTimeout(function() {
+	            			location.href = "{:U('Index/history')}";
+	        			},500);
+					});
+				}else {
+					$("input[name='user']").focus();
+					layer.msg("请输入借用人或归还人!",{icon:2});
+				}
+			});
+			//借、还提交结束
+
+			// 根据输入前缀请求姓名
+			var user = $("input[name='user']");
+			var autoList_user = $("#autoList_user");
+			user.keyup(function(){
+	    		if($(this).val() !== ''){
+			        setTimeout(function() {
+			            $.post("{:U('Public/request_user')}",{'username':''+user.val()+''},function(data) {
+			            	var data = data['info'];
+			            	autoList_user.html('');//先清空，防止多次请求后重复
+				            if(data.length >0) {
+				            	for(var i in data){
+				            		autoList_user.append("<option value="+data[i]+">");
+				            	}
+				            }
+			            })
+			        },500);
+	    		}
+   		 	});
+		});
+		//从借物车移除
+		function removes(id) {
+			$("#t"+id).remove();//移除行
+			$("input[name='ajax_name']").focus();
+			var count = $("#count>strong").html();//获取当前借物车中的个数
+			$("#count>strong").html(parseInt(count)-1);
+			count = count-1;
+			if (count== 0) {
+				$("#table-responsive").removeClass('show');
+				$("#table-responsive").addClass('hidden');
+				$("#count").addClass("hidden");
+				$("#help").removeClass("hidden");
+				$("#help").addClass("show");
+				$("#user").addClass('hidden');
+			}
+		}
+	    -->
+	</script>
+</head>
+<body>
+<div class="container">
+	<!-- 包含公共头部 -->
+	<include file="Common/header" />
+	<!-- 面包屑开始 -->
+	<ul class="bread bg-gray bg-inverse radius-none hidden-l hidden-s hidden-m">
+		<li><span class="icon-home"></span> <a href="#"> 首页</a></li>
+		<li>批量操作</li>
+	</ul>
+	<!-- 面包屑结束 -->
+	<!-- 主体开始 -->
+	<div class="margin-top margin-bottom">
+		<div class="panel">
+			<div class="panel-head"><h2><span class="icon-th"></span> 批量操作</h2></div>
+				<!-- 左侧开始 -->
+				<div class="line margin-top margin-bottom">
+					<div class="xm10">
+						<h1 class="margin help" id="help">请在右边输入编号添加手机</h1>
+						<div class="table-responsive padding hidden" id="table-responsive">
+							<table class="table table-bordered table-striped table-hover" id="table">
+							</table>
+						</div>
+					</div>
+					<!-- 左侧结束 -->
+					<!-- 右侧开始 -->
+					<div class="xm2 padding">
+						<!-- Group one begin -->
+						<div class="form-group">
+							<div class="field field-icon">
+								<input type="text" class="input input-auto" name="ajax_name" size="20" placeholder="输入手机编号回车" />
+								<span class="icon icon-mobile"></span>
+							</div>
+						</div>
+						<!-- Group one end -->
+						<!-- Group two begin -->
+						<div class="form-group hidden" id="user">
+							<if condition="$Think.session.auth.role eq 1">
+							<div class="field field-icon hidden">
+							<else/>
+							<div class="field field-icon">
+							</if>
+								<input type="text" class="input input-auto" name="user" size="20" placeholder="借用人/归还人" list="autoList_user" autocomplete="off" />
+								<datalist id="autoList_user"></datalist>
+								<span class="icon icon-user"></span>
+							</div>
+							<div class="field field-icon margin-top">
+								<input type="text" class="input input-auto" name="remark" size="20" placeholder="备注说明（选填）" />
+								<span class="icon icon-pencil"></span>
+							</div>
+							<div class="field margin-top margin-bottom text-center">
+								<button class="margin-top margin-botton button button-little bg-blue submit">借用</button>
+								<button class="margin-top margin-botton button button-little bg-yellow submit">归还</button>
+								<button class="margin-top margin-botton button button-little bg-dot submit">返修</button>
+								<button class="margin-top margin-botton button button-little bg-main submit">退货</button>
+								<button class="margin-top margin-botton button button-little bg-main submit" title="报废处理">处理</button>
+							</div>
+						</div>
+						<!-- Group two end -->
+						<!-- Group three begin -->
+						<div class="form-group">
+							<div id="count" class="txt txt-large radius-small bg-sub hidden container-layout"><strong>0</strong><span>个</span></div>
+						</div>
+						<!-- Group three end-->
+					</div>
+					<!-- 右侧结束 -->
+				</div>
+
+		</div>
+	</div>
+	<!-- 主体结束 -->
+	<!-- 包含公共页脚 -->
+	<include file="Common/footer" />
+</div>
+</body>
+</html>

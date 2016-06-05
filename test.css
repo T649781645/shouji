@@ -1,0 +1,27 @@
+body {font-size: 12px;}
+table,th,td {
+	border:1px solid #ccc;
+	border-collapse: collapse;
+  	border-spacing: 0;
+}
+th {
+	font-weight: bold;
+	background-color: #efefef;
+}
+th,td {
+	padding:5px;
+}
+tr:hover {background-color: #eeeeee;}
+tr:first-child {height: 30px;}
+tr:last-child:hover {background-color: #fff;}
+a {text-decoration: none;}
+.center {text-align: center;}
+.button {
+	color: white;
+	border:solid 1px #ddd;
+	background:#0ae;
+	padding: 3px 5px;
+	border-radius: 4px;
+	display:inline-block;
+}
+.button:hover {background-color: #0be;}

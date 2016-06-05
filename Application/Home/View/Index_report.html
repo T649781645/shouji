@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<title>财务报表-手机自助借还系统</title>
+	<meta name="keywords" content="手机" />
+	<meta name="description" content="手机自助借还系统" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+	<link type="image/x-icon" href="__APP__/favicon.ico" rel="shortcut icon" />
+	<link href="__APP__/favicon.ico" rel="bookmark icon" />
+	<link rel="stylesheet" href="__PUBLIC__/pintuer/pintuer.css">
+	<link rel="stylesheet" href="__PUBLIC__/Css/style.css">
+	<style type="text/css">
+		<!--
+			.item img {
+				width:100%;
+				height:200px;
+			}
+			.button {
+				padding: 6px 6px;
+			}
+			table tr td {
+				text-align: center;
+			}
+			.help {
+				height: 200px;
+				line-height: 200px;
+			  	color: #daa;
+			  	font-size: 3em;
+			  	text-align: center;
+			  	border:1px dashed #99CC99;
+			}
+		-->
+	</style>
+	<script src="__PUBLIC__/pintuer/jquery.js"></script>
+	<script src="__PUBLIC__/pintuer/pintuer.js"></script>
+	<script src="__PUBLIC__/pintuer/respond.js"></script>
+	<script src="__PUBLIC__/pintuer/jquery.form.js"></script>
+	<script src="__PUBLIC__/layer/layer.js"></script>
+</head>
+<body>
+<div class="container">
+	<!-- 包含公共头部 -->
+	<include file="Common/header" />
+	<!-- 面包屑开始 -->
+	<ul class="bread bg-gray bg-inverse radius-none">
+		<li><span class="icon-home"></span> <a href="#"> 首页</a></li>
+		<li>财务报表</li>
+	</ul>
+	<!-- 面包屑结束 -->
+	<!-- 主体开始 -->
+	<div class="margin-top margin-bottom">
+		<div class="panel">
+			<div class="panel-head">
+				<h2>
+					<span class="icon-home"></span> 财务报表
+					<if condition="$Think.session.auth.role eq 2">
+					<div class="float-right">
+						<form class="form form-inline" action="{:U('Index/report_check')}" method="post" style="margin:0px;padding:0px;">
+							<div class="form-group">
+								<div class="field">
+									<input type="text" class="input input-small" name="month" size="15" value="{$Think.NOW_TIME|date="Y-m-01",###}" title="不明白原理请勿乱改" placeholder="2015-12-01">
+								</div>
+								<div class="form-button" style="padding-left:5px;">
+									<button class="button button-little" type="submit">更新结算</button>
+								</div>
+							</div>
+						</form>
+					</div>
+					</if>
+				</h2>
+			</div>
+			<div class="panel-body table-responsive">
+				<empty name="list">
+				<p class="help">当前没有数据</p>
+				<else />
+				<table class="table table-striped table-hover">
+					<tr>
+						<th>月份</th>
+						<th>入库</th>
+						<th>退货</th>
+						<th>报废(处理)</th>
+						<th>返修</th>
+						<th>结存</th>
+						<th>结算时间</th>
+					</tr>
+					<volist name="list" id ="vo">
+					<tr>
+						<td>{$vo.month}</td>
+						<td><a href="{:U('Index/report',array('time'=>strtotime($vo['month'].'-01'),'type'=>1))}" title="查看入库明细">{$vo.income}</a></td>
+						<td><a href="{:U('Index/report',array('time'=>strtotime($vo['month'].'-01'),'type'=>5))}" title="查看退货明细">{$vo.return}</a></td>
+						<td><a href="{:U('Index/report',array('time'=>strtotime($vo['month'].'-01'),'type'=>6))}" title="查看报废出库明细">{$vo.send}</a></td>
+						<td><a href="{:U('Index/report',array('time'=>strtotime($vo['month'].'-01'),'type'=>4))}" title="查看送修明细">{$vo.repair}</a></td>
+						<td>{$vo.store}</td>
+						<td>{$vo.create_time|date='Y-m-d H:i:s',###}</td>
+					</tr>
+					</volist>
+				</table>
+				<div class="margin-top">
+					<p class="text-gray icon-question-circle"> 注：结存 = 上月结存 + 入库 - 退货 - 报废</p>
+					<p class="text-gray icon-question-circle"> 2015年11月23日正式启用本系统，2015年11月数据为不完全统计。</p>
+				</div>
+				</empty>
+			</div>
+		</div>
+	</div>
+	<!-- 主体结束 -->
+	<!-- 包含公共页脚 -->
+	<include file="Common/footer" />
+</div>
+</body>
+</html>

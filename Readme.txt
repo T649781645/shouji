@@ -1,0 +1,2 @@
+这是一个手机借还管理系统
+使用前请先配置数据库（文件Application/Common/config.php），然后执行根目录下的shouji.sql文件创建数据库

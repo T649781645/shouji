@@ -1,0 +1,65 @@
+<!-- 顶部开始 -->
+<div class="layout bg hidden-l print-hidden hidden-l hidden-s hidden-m">
+	<div class="container-layout height-big">
+		<span class="float-right">
+			<a href="{:U('Public/register')}">注册</a>
+			<span class="text-little text-gray">|</span>
+			<present name="Think.session.auth">
+			<a href="{:U('Public/logout')}">退出</a><else />
+			<a href="{:U('Public/login')}">登录</a>
+			</present>
+		</span>
+		欢迎 <a href="{:U('Index/account')}" class="text-yellow">{$Think.session.auth.nickname|default=guest}</a> 使用手机自助借还系统
+	</div>
+</div>
+<!-- 顶部结束 -->
+<!-- 导航开始 -->
+<div class="margin-top margin-bottom navbar bg-blue bg-inverse radius print-hidden">
+	<!-- logo begin -->
+	<div class="navbar-head">
+		<button class="button icon-navicon" data-target="#navbar1"></button>
+		<a href="#"><img class="logo" src="__PUBLIC__/pintuer/30-white.png" /></a>
+	</div>
+	<!-- logo end -->
+	<!-- navbar begin -->
+	<div class="navbar-body nav-navicon" id="navbar1">
+		<ul class="nav nav-inline nav-menu nav-big">
+			<li <if condition="$Think.const.MAC eq 'Home/Index/index'"> class="active" </if>><a href="{:U('Index/index')}">首页</a></li>
+			<li <if condition="$Think.const.MAC eq 'Home/Index/history'"> class="active" </if>><a href="{:U('Index/history')}">历史记录</a></li>
+			<if condition="$Think.session.auth.role eq 2">
+			<li <if condition="$Think.const.MAC eq 'Home/Index/addnew'"> class="active" </if>><a href="{:U('Index/addnew')}">新机登记</a></li>
+			</if>
+			<if condition="$Think.session.auth.role eq 2">
+			<li <if condition="$Think.const.MAC eq 'Home/Index/batch'"> class="active" </if>><a href="{:U('Index/batch')}">批量操作</a></li>
+			</if>
+			<li <if condition="$Think.const.MAC eq 'Home/Index/search'"> class="active" </if>><a href="{:U('Index/search',array('flag'=>'advanced'))}">高级搜索</a></li>
+			<li <if condition="$Think.const.MAC eq 'Home/Index/report'"> class="active" </if>><a href="{:U('Index/report')}">财务报表</a></li>
+			<li class="nav-more disable"><a href="#" disable="disable">更多<span class="arrow"></span></a>
+				<ul class="drop-menu">
+					<if condition="$Think.session.auth.role eq 2">
+					<li><a href="{:U('Index/export')}"><span class="icon-file-excel-o"></span> 数据导出</a></li>
+					<li><a href="{:U('Index/import')}"><span class="icon-database"></span> 数据导入</a></li>
+					</if>
+					<li><a href="{:U('Public/about')}" title="关于本系统"><span class="icon-question-circle"></span> 关于系统</a></li>
+				</ul>
+			</li>
+			<!-- 搜索开始 -->
+			<div class="float-right hidden-l hidden-s hidden-m" style="height:45px;line-height:45px;margin-right:10px">
+				<form method="get" action="{:U('Index/search')}" class="form-inline">
+					<div class="form-group">
+						<div class="field">
+							<input type="text" class="input" name="search_model" size="20" <present name='Think.cookie.model'> value="{$Think.cookie.model}" <else /> value="" </present> placeholder="输入型号搜索" />
+						</div>
+					</div>
+					<div class="form-button">
+						<input type="hidden" name="flag" value="model">
+						<button class="button bg-green" type="submit">搜索</button>
+					</div>
+				</form>
+			</div>
+			<!-- 搜索结束 -->
+		</ul>
+	</div>
+	<!-- navbar end -->
+</div>
+<!-- 导航结束 -->
